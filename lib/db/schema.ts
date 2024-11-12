@@ -5,6 +5,8 @@ import {
   text,
   timestamp,
   integer,
+  jsonb,
+  decimal,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
@@ -68,6 +70,56 @@ export const invitations = pgTable('invitations', {
   status: varchar('status', { length: 20 }).notNull().default('pending'),
 });
 
+export const brands = pgTable('brands', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id),
+  name: varchar('name', { length: 100 }).notNull(),
+  websiteUrl: text('website_url').notNull(),
+  profile: jsonb('profile'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+export const products = pgTable('products', {
+  id: serial('id').primaryKey(),
+  brandId: integer('brand_id')
+    .notNull()
+    .references(() => brands.id),
+  name: varchar('name', { length: 100 }).notNull(),
+  description: text('description'),
+  price: decimal('price', { precision: 10, scale: 2 }),
+  imageUrl: text('image_url'),
+  externalId: text('external_id'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
+export const generations = pgTable('generations', {
+  id: serial('id').primaryKey(),
+  brandId: integer('brand_id')
+    .notNull()
+    .references(() => brands.id),
+  flowId: text('flow_id').notNull(),
+  variationId: text('variation_id').notNull(),
+  templateId: text('template_id').notNull(),
+  content: jsonb('content').notNull(),
+  status: varchar('status', { length: 20 }).notNull().default('draft'),
+  version: integer('version').notNull().default(1),
+  language: varchar('language', { length: 10 }).notNull().default('en'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
+export const generationVersions = pgTable('generation_versions', {
+  id: serial('id').primaryKey(),
+  generationId: integer('generation_id')
+    .notNull()
+    .references(() => generations.id),
+  content: jsonb('content').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+});
+
 export const teamsRelations = relations(teams, ({ many }) => ({
   teamMembers: many(teamMembers),
   activityLogs: many(activityLogs),
@@ -112,6 +164,37 @@ export const activityLogsRelations = relations(activityLogs, ({ one }) => ({
   }),
 }));
 
+export const brandsRelations = relations(brands, ({ one, many }) => ({
+  user: one(users, {
+    fields: [brands.userId],
+    references: [users.id],
+  }),
+  products: many(products),
+  generations: many(generations),
+}));
+
+export const productsRelations = relations(products, ({ one }) => ({
+  brand: one(brands, {
+    fields: [products.brandId],
+    references: [brands.id],
+  }),
+}));
+
+export const generationsRelations = relations(generations, ({ one, many }) => ({
+  brand: one(brands, {
+    fields: [generations.brandId],
+    references: [brands.id],
+  }),
+  versions: many(generationVersions),
+}));
+
+export const generationVersionsRelations = relations(generationVersions, ({ one }) => ({
+  generation: one(generations, {
+    fields: [generationVersions.generationId],
+    references: [generations.id],
+  }),
+}));
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Team = typeof teams.$inferSelect;
@@ -127,6 +210,14 @@ export type TeamDataWithMembers = Team & {
     user: Pick<User, 'id' | 'name' | 'email'>;
   })[];
 };
+export type Brand = typeof brands.$inferSelect;
+export type NewBrand = typeof brands.$inferInsert;
+export type Product = typeof products.$inferSelect;
+export type NewProduct = typeof products.$inferInsert;
+export type Generation = typeof generations.$inferSelect;
+export type NewGeneration = typeof generations.$inferInsert;
+export type GenerationVersion = typeof generationVersions.$inferSelect;
+export type NewGenerationVersion = typeof generationVersions.$inferInsert;
 
 export enum ActivityType {
   SIGN_UP = 'SIGN_UP',

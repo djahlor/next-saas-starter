@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -30,14 +31,14 @@ export function InviteTeamMember() {
   >(inviteTeamMember, { error: '', success: '' });
 
   return (
-    <Card>
+    <Card className="border-gray-200/80 dark:border-white/10 bg-white dark:bg-black/50 backdrop-blur-xl">
       <CardHeader>
-        <CardTitle>Invite Team Member</CardTitle>
+        <CardTitle className="text-gray-900 dark:text-white">Invite Team Member</CardTitle>
       </CardHeader>
       <CardContent>
         <form action={inviteAction} className="space-y-4">
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-gray-700 dark:text-white">Email</Label>
             <Input
               id="email"
               name="email"
@@ -45,10 +46,11 @@ export function InviteTeamMember() {
               placeholder="Enter email"
               required
               disabled={!isOwner}
+              className="bg-white dark:bg-black/50 border-gray-200/80 dark:border-white/10 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-white/50"
             />
           </div>
           <div>
-            <Label>Role</Label>
+            <Label className="text-gray-700 dark:text-white">Role</Label>
             <RadioGroup
               defaultValue="member"
               name="role"
@@ -56,12 +58,20 @@ export function InviteTeamMember() {
               disabled={!isOwner}
             >
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="member" id="member" />
-                <Label htmlFor="member">Member</Label>
+                <RadioGroupItem 
+                  value="member" 
+                  id="member" 
+                  className="border-gray-200/80 dark:border-white/10 text-gray-900 dark:text-white" 
+                />
+                <Label htmlFor="member" className="text-gray-700 dark:text-white">Member</Label>
               </div>
               <div className="flex items-center space-x-2">
-                <RadioGroupItem value="owner" id="owner" />
-                <Label htmlFor="owner">Owner</Label>
+                <RadioGroupItem 
+                  value="owner" 
+                  id="owner" 
+                  className="border-gray-200/80 dark:border-white/10 text-gray-900 dark:text-white" 
+                />
+                <Label htmlFor="owner" className="text-gray-700 dark:text-white">Owner</Label>
               </div>
             </RadioGroup>
           </div>
@@ -73,7 +83,7 @@ export function InviteTeamMember() {
           )}
           <Button
             type="submit"
-            className="bg-orange-500 hover:bg-orange-600 text-white"
+            className="bg-blue-500 hover:bg-blue-600 text-white border-0"
             disabled={isInvitePending || !isOwner}
           >
             {isInvitePending ? (
@@ -92,7 +102,7 @@ export function InviteTeamMember() {
       </CardContent>
       {!isOwner && (
         <CardFooter>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-gray-500 dark:text-white/70">
             You must be a team owner to invite new members.
           </p>
         </CardFooter>
