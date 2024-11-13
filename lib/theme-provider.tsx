@@ -25,9 +25,14 @@ export function ThemeProvider({
   children,
   defaultTheme = 'dark',
 }: ThemeProviderProps) {
-  const [theme, setTheme] = React.useState<Theme>(
-    () => (localStorage?.getItem('theme') as Theme) || defaultTheme
-  );
+  const [theme, setTheme] = React.useState<Theme>(defaultTheme);
+
+  React.useEffect(() => {
+    const savedTheme = localStorage?.getItem('theme') as Theme;
+    if (savedTheme) {
+      setTheme(savedTheme);
+    }
+  }, []);
 
   React.useEffect(() => {
     const root = window.document.documentElement;

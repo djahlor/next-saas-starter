@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowRight, Check } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const images = {
   row1: [
@@ -29,6 +30,7 @@ const images = {
 };
 
 export default function HomePage() {
+  const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -40,70 +42,79 @@ export default function HomePage() {
     return () => clearTimeout(timer);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
-      setIsSubmitted(true);
+      // Track the conversion
+      fbq('track', 'Lead', {
+        content_name: 'Newsletter Signup',
+        status: 'success'
+      });
+
+      // Optional: Save email to your database/ConvertKit here
+      
+      // Redirect to success page
+      router.push('/success');
     }
   };
 
   return (
     <main className="fixed inset-0 bg-black flex items-center justify-center">
       {/* Refined Radial Gradient - clearer center */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.5)_30%,rgba(0,0,0,0.95)_70%)] z-[1]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_30%,rgba(0,0,0,0.95)_70%)] z-[1]" />
 
       {/* Background Slides - Adjusted positioning */}
-      <div className="absolute inset-0 z-0 animate-fade-in scale-[0.85] perspective-[2000px]">
+      <div className="absolute inset-0 z-0 animate-fade-in scale-100 perspective-[2000px]">
         {/* Top Row */}
         <div 
-          className="absolute w-[150%] -left-[25%] top-[-20%] overflow-hidden flex items-center"
+          className="absolute w-[180%] -left-[40%] top-[-25%] overflow-hidden flex items-center"
           style={{ 
-            transform: 'rotate(15deg) rotateX(15deg) translateZ(-100px)',
+            transform: 'rotate(15deg) rotateX(15deg) translateZ(-30px)',
             transformStyle: 'preserve-3d',
           }}
         >
           <div className="flex animate-slide-in-left-slow" style={{ transform: 'translateX(-33.33%)' }}>
             {[...images.row1, ...images.row1, ...images.row1].map((src, i) => (
-              <div key={i} className="w-[200px] h-[400px] flex-shrink-0 mx-6 transform hover:scale-105 transition-all duration-500">
+              <div key={i} className="w-[250px] h-[500px] flex-shrink-0 mx-4 transform hover:scale-105 transition-all duration-500">
                 <div className="relative h-full overflow-hidden">
                   <img 
                     src={src} 
                     alt="" 
                     className="w-full h-full object-cover rounded-2xl"
                     style={{ 
-                      boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
-                      filter: 'brightness(0.8) contrast(1.1)' 
+                      boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
+                      filter: 'brightness(0.85) contrast(1.2)' 
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Bottom Row - Moved up slightly */}
+        {/* Bottom Row */}
         <div 
-          className="absolute w-[150%] -left-[25%] bottom-[-25%] overflow-hidden flex items-center"
+          className="absolute w-[180%] -left-[40%] bottom-[-30%] overflow-hidden flex items-center"
           style={{ 
-            transform: 'rotate(15deg) rotateX(15deg) translateZ(-200px)',
+            transform: 'rotate(15deg) rotateX(15deg) translateZ(-80px)',
             transformStyle: 'preserve-3d',
           }}
         >
           <div className="flex animate-slide-in-right-fast">
             {[...images.row2, ...images.row2, ...images.row2].map((src, i) => (
-              <div key={i} className="w-[200px] h-[400px] flex-shrink-0 mx-6 transform hover:scale-105 transition-all duration-500">
+              <div key={i} className="w-[250px] h-[500px] flex-shrink-0 mx-4 transform hover:scale-105 transition-all duration-500">
                 <div className="relative h-full overflow-hidden">
                   <img 
                     src={src} 
                     alt="" 
                     className="w-full h-full object-cover rounded-2xl"
                     style={{ 
-                      boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
-                      filter: 'brightness(0.8) contrast(1.1)' 
+                      boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
+                      filter: 'brightness(0.85) contrast(1.2)' 
                     }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                 </div>
               </div>
             ))}
@@ -125,7 +136,7 @@ export default function HomePage() {
               className="text-lg md:text-xl text-gray-200 mb-12 max-w-xl mx-auto opacity-0 animate-fade-in-up-2"
               style={{ animationDelay: '1200ms' }}
             >
-              Your AI copilot for high-converting email campaigns and content
+              Your AI copilot for high-converting email campaigns
             </p>
             
             {/* Email Form */}
@@ -134,19 +145,19 @@ export default function HomePage() {
               className="relative max-w-xl mx-auto opacity-0 animate-fade-in-up-3"
               style={{ animationDelay: '1400ms' }}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 rounded-full blur-xl opacity-50" />
-              <div className="relative flex gap-3 p-2 rounded-full bg-white/95 shadow-[0_8px_32px_rgba(0,0,0,0.4)] backdrop-blur-xl border border-white/20 transition-all duration-1000 hover:scale-[1.02]">
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 rounded-full blur-xl opacity-20" />
+              <div className="relative flex gap-3 p-2 rounded-full bg-[#191B20] shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-white/5 transition-all duration-1000 hover:scale-[1.02]">
                 <Input 
                   ref={inputRef}
                   type="email" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter your email address" 
-                  className="h-14 flex-1 bg-white/50 backdrop-blur-sm border-0 rounded-full text-black placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500/50 text-base px-6 shadow-inner transition-all duration-1000"
+                  className="h-14 flex-1 bg-[#16181B] border-0 rounded-full text-gray-300 placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500/50 text-base px-6 shadow-inner transition-all duration-1000"
                 />
                 <Button 
                   type="submit"
-                  className="h-14 px-8 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium text-base shadow-xl transition-all duration-1000 hover:shadow-2xl hover:scale-[1.02]"
+                  className="h-14 px-8 rounded-full bg-blue-500 hover:bg-blue-600 text-white font-medium text-base shadow-xl transition-all duration-1000 hover:shadow-2xl hover:scale-[1.02]"
                 >
                   Join waitlist
                 </Button>
