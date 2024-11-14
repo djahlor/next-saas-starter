@@ -67,82 +67,58 @@ Key Differentiators:
 # Doc
 XXXX
 
-# Desired file structure
-```
+# Current file structure
 app/
-├── (login)/                     # Existing auth routes from starter
+├── (dashboard)/
+│   ├── brand/
+│   │   └── page.tsx
+│   ├── create/
+│   │   └── page.tsx
+│   ├── history/
+│   │   └── page.tsx
+│   ├── products/
+│   │   └── page.tsx
+│   ├── settings/
+│   │   ├── activity/
+│   │   ├── billing/
+│   │   ├── profile/
+│   │   ├── security/
+│   │   ├── invite-team.tsx
+│   │   ├── layout.tsx
+│   │   ├── page.tsx
+│   │   └── settings-client.tsx
+│   ├── templates/
+│   │   ├── page.tsx
+│   │   ├── layout.tsx
+│   │   └── terminal.tsx
+│   └── layout.tsx
+├── (login)/
 │   ├── sign-in/
+│   │   └── page.tsx
 │   ├── sign-up/
-│   └── auth-callback/
-├── (dashboard)/                 # Protected dashboard routes
-│   ├── layout.tsx              # Dashboard layout (from starter)
-│   ├── page.tsx                # Dashboard home
-│   ├── brands/                 # Brand management
-│   │   ├── page.tsx           # Brands list (server)
-│   │   ├── new/               # New brand flow
-│   │   │   └── page.tsx       # Brand creation (server)
-│   │   └── [brandId]/         # Brand details
-│   │       └── page.tsx       # Brand management (server)
-│   ├── templates/             # Template management
-│   │   ├── page.tsx          # Template list (server)
-│   │   └── [templateId]/     # Template config
-│   │       └── page.tsx      # Generation (server)
-│   └── history/              # Generation history
-│       └── page.tsx         # History list (server)
-├── api/                      # API routes
+│   │   └── page.tsx
+│   ├── actions.ts
+│   └── login.tsx
+├── (marketing)/
+│   ├── pricing/
+│   │   ├── page.tsx
+│   │   └── submit-button.tsx
+│   └── success/
+│       ├── page.tsx
+│       └── layout.tsx
+├── api/
 │   ├── brands/
-│   │   ├── route.ts         # Brands CRUD
-│   │   ├── analyze/         # Website analysis
-│   │   │   └── route.ts
-│   │   └── [brandId]/
-│   │       ├── route.ts     # Brand details
-│   │       └── products/    # Products management
-│   │           └── route.ts
 │   ├── generations/
-│   │   ├── route.ts         # Create generation
-│   │   └── [id]/
-│   │       ├── route.ts     # Get/update generation
-│   │       ├── approve/     # Approve generation
-│   │       │   └── route.ts
-│   │       └── versions/    # Version management
-│   │           └── route.ts
-│   └── stripe/              # Keep existing Stripe routes
-├── layout.tsx               # Root layout (from starter)
-└── page.tsx                # Landing page (from starter)
+│   ├── stripe/
+│   └── subscribe/
+├── components/
+├── hooks/
+├── lib/
+├── public/
+└── types/
 
-components/
-├── brands/                  # Brand components
-│   ├── brand-creator.tsx   # Brand creation wizard ('use client')
-│   ├── brand-card.tsx      # Brand list item
-│   └── website-analyzer.tsx # Analysis UI ('use client')
-├── templates/              # Template components
-│   ├── template-flow.tsx   # Template selection ('use client')
-│   ├── template-card.tsx   # Template list item
-│   └── content-editor.tsx  # Content editing ('use client')
-└── ui/                     # Keep existing shadcn components
+# Desired file structure
 
-lib/
-├── auth/                   # Keep existing auth
-├── db/                     # Database (from starter)
-│   ├── migrations/        # SQL migrations
-│   ├── schema.ts         # Drizzle schema
-│   └── queries.ts        # Database queries
-├── ai/                    # AI functionality
-│   ├── analyze.ts        # Website analysis
-│   └── generate.ts       # Content generation
-└── templates/            # Template definitions
-    ├── flows.ts         # Email flows
-    ├── variations.ts    # Template variations
-    └── prompts/         # Generation prompts
-        ├── base.ts     
-        └── templates/   # Template-specific prompts
-
-types/
-├── brand.ts              # Brand types
-├── generation.ts         # Generation types
-├── product.ts           # Product types
-└── template.ts          # Template types
-```
 
 # Additional requirements
 XXXX

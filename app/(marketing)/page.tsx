@@ -69,8 +69,8 @@ export default function HomePage() {
         }
 
         // Track with Facebook Pixel
-        if (typeof window !== 'undefined' && window.fbq) {
-          fbq('track', 'Lead', {
+        if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+          window.fbq('track', 'Lead', {
             content_name: 'Newsletter Signup',
             status: 'success'
           });

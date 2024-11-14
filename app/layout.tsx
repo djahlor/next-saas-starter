@@ -4,6 +4,7 @@ import { Manrope } from 'next/font/google';
 import { UserProvider } from '@/lib/auth';
 import { getUser } from '@/lib/db/queries';
 import { FacebookPixel } from '@/components/FacebookPixel';
+import { ThemeProvider } from '@/lib/theme-provider';
 
 export const metadata: Metadata = {
   title: 'Next.js SaaS Starter',
@@ -26,10 +27,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`bg-white dark:bg-gray-950 text-black dark:text-white ${manrope.className}`}
+      className={`${manrope.className}`}
+      suppressHydrationWarning
     >
-      <body className="min-h-[100dvh] bg-gray-50">
-        <UserProvider userPromise={userPromise}>{children}</UserProvider>
+      <body className="min-h-[100dvh]">
+        <ThemeProvider>
+          <UserProvider userPromise={userPromise}>
+            {children}
+          </UserProvider>
+        </ThemeProvider>
         <FacebookPixel pixelId="your-pixel-id" />
       </body>
     </html>

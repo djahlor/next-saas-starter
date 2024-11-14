@@ -38,8 +38,8 @@ const BenefitsList = () => (
 export default function SuccessPage() {
   useEffect(() => {
     // Track success page view
-    if (typeof window !== 'undefined' && window.fbq) {
-      fbq('track', 'CompleteRegistration', {
+    if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+      window.fbq('track', 'CompleteRegistration', {
         content_name: 'Waitlist Signup',
         status: 'success'
       });
