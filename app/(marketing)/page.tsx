@@ -1,10 +1,12 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ArrowRight, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+
+const ENABLE_CONVERTKIT = false; // Easy toggle for ConvertKit integration
 
 const images = {
   row1: [
@@ -34,6 +36,8 @@ export default function HomePage() {
   const inputRef = useRef<HTMLInputElement>(null);
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -45,21 +49,55 @@ export default function HomePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
-      // Track the conversion
-      fbq('track', 'Lead', {
-        content_name: 'Newsletter Signup',
-        status: 'success'
-      });
+      try {
+        // Start the transition animation
+        setIsTransitioning(true);
+        
+        // Wait for fade out animation
+        await new Promise(resolve => setTimeout(resolve, 600));
 
-      // Optional: Save email to your database/ConvertKit here
-      
-      // Redirect to success page
-      router.push('/success');
+        if (ENABLE_CONVERTKIT) {
+          const response = await fetch('/api/subscribe', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email }),
+          });
+
+          if (!response.ok) throw new Error('Subscription failed');
+        }
+
+        // Track with Facebook Pixel
+        if (typeof window !== 'undefined' && window.fbq) {
+          fbq('track', 'Lead', {
+            content_name: 'Newsletter Signup',
+            status: 'success'
+          });
+        }
+
+        // Use startTransition for smooth navigation
+        startTransition(() => {
+          router.push('/success');
+        });
+      } catch (error) {
+        console.error('Subscription error:', error);
+        startTransition(() => {
+          router.push('/success');
+        });
+      }
     }
   };
 
+  const overlayClass = `fixed inset-0 bg-black transition-opacity duration-600 z-50 pointer-events-none ${
+    isTransitioning ? 'opacity-100' : 'opacity-0'
+  }`;
+
   return (
     <main className="fixed inset-0 bg-black flex items-center justify-center">
+      {/* Add the transition overlay */}
+      <div className={overlayClass} />
+
       {/* Refined Radial Gradient - clearer center */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_30%,rgba(0,0,0,0.95)_70%)] z-[1]" />
 
@@ -127,7 +165,7 @@ export default function HomePage() {
         {!isSubmitted ? (
           <>
             <h1 
-              className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 opacity-0 animate-fade-in-up-1"
+              className="text-5xl md:text-5xl lg:text-7xl font-bold text-white mb-6 opacity-0 animate-fade-in-up-1"
               style={{ animationDelay: '1000ms' }}
             >
               Generate Brand Perfect Emails
@@ -163,10 +201,23 @@ export default function HomePage() {
                 </Button>
               </div>
               <div 
-                className="mt-4 text-sm text-gray-400 opacity-0 animate-fade-in-up-4"
+                className="mt-4 opacity-0 animate-fade-in-up-4"
                 style={{ animationDelay: '1600ms' }}
               >
-                Join 2,500+ marketers and creators
+                <ul className="max-w-sm mx-auto space-y-2 text-sm text-gray-400">
+                  <li className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-blue-500 flex-shrink-0" />
+                    <span>Join 2,500+ Shopify sellers</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-blue-500 flex-shrink-0" />
+                    <span>Save 10+ hours per week on email marketing</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="h-4 w-4 text-blue-500 flex-shrink-0" />
+                    <span>Generate on-brand emails in seconds</span>
+                  </li>
+                </ul>
               </div>
             </form>
           </>
